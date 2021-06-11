@@ -1,0 +1,49 @@
+var triangle;
+var cloud;
+var platform;
+var GRAVITY = 1;
+
+function setup() {
+  createCanvas(800, 400);
+
+  triangle = createSprite(300, 150);
+  triangle.addAnimation('normal', 'assets/triangle.png');
+  triangle.debug = true;
+
+  cloud = createSprite(500, 150);
+  cloud.addAnimation('normal', 'assets/cloud_breathing0001.png', 'assets/cloud_breathing0009.png');
+  cloud.addAnimation('transformed', 'assets/asterisk_normal0001.png', 'assets/asterisk_normal0003.png');
+  cloud.setCollider('circle', 0, 0, 50);
+  cloud.debug = true;
+
+  platform = createSprite(400, 300);
+  platform.addImage(loadImage('assets/platform.png'));
+
+  triangle.depth = 10;
+}
+
+function draw() {
+  background(255, 255, 255);
+
+  triangle.velocity.x = 0;
+
+//   if (keyIsDown(LEFT_ARROW))
+//     triangle.velocity.x = -5;
+//   if (keyIsDown(RIGHT_ARROW))
+//     triangle.velocity.x = 5;
+
+  if(cloud.overlapPoint(triangle.position.x, triangle.position.y))
+    cloud.changeAnimation('transformed');
+
+  if(platform.overlapPixel(triangle.position.x, triangle.position.y+30)==false)
+    triangle.velocity.y += GRAVITY;
+
+
+  while(platform.overlapPixel(triangle.position.x, triangle.position.y+30))
+  {
+    triangle.position.y--;
+    triangle.velocity.y = 0;
+  }
+
+  drawSprites();
+}
